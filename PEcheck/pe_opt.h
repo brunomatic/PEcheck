@@ -4,6 +4,12 @@
 #include <stdint.h>
 #include <stdio.h>
 
+
+typedef struct {
+	uint32_t RVA;
+	uint32_t size;
+} DATA_DIR;
+
 typedef struct
 {
 	uint16_t magic;				// magic number
@@ -36,7 +42,9 @@ typedef struct
 	uint32_t size_heap_commit;	// size to commit on heap
 	uint32_t loader_flags;		// reserved - 0x0
 	uint32_t num_data_dirs;		// number of data directories after optional header
+	DATA_DIR *data_dirs;		// pointer to data directories - can hardcode it to array of 16 but...standards
 } PE_OPTIONAL_HEADER;
+
 
 int read_optional_header(FILE * file, PE_OPTIONAL_HEADER * header, uint32_t offset);
 

@@ -1,8 +1,9 @@
 #include <stdio.h>
+#include <stdlib.h>
 #include "pe_opt.h"
 
 
-void subystem(uint16_t subsystem);
+void subystem_lookup(uint16_t subsystem);
 void dll_characteristics(uint16_t characteristics);
 
 int read_optional_header(FILE * file, PE_OPTIONAL_HEADER * header, uint32_t offset) {
@@ -11,11 +12,17 @@ int read_optional_header(FILE * file, PE_OPTIONAL_HEADER * header, uint32_t offs
 		return 0;
 	}
 
-	if (!fread(header, sizeof(PE_OPTIONAL_HEADER), 1, file)) {
+	if (!fread(header, sizeof(PE_OPTIONAL_HEADER)-4, 1, file)) {
 		return 0;
 	}
 
 	if (header->magic != 0x10b) {
+		return 0;
+	}
+
+	header->data_dirs = malloc(sizeof(DATA_DIR)*header->num_data_dirs);
+	
+	if (!fread(header->data_dirs, sizeof(DATA_DIR), header->num_data_dirs, file)) {
 		return 0;
 	}
 
@@ -24,6 +31,26 @@ int read_optional_header(FILE * file, PE_OPTIONAL_HEADER * header, uint32_t offs
 
 
 void print_pe_opt_header(PE_OPTIONAL_HEADER * header) {
+	const char * names[] = {
+		"Export Table",
+		"Import Table",
+		"Resource Table",
+		"Exception Table",
+		"Certificate Table",
+		"Relocation Table",
+		"Debug",
+		"Architecture",
+		"Global Ptr",
+		"TLS Table",
+		"Load Config Table",
+		"Bound Import",
+		"IAT",
+		"Delay Import Descriptor",
+		"CLR Runtime Header",
+		"Reserved"
+	};
+	int i;
+
 	printf("====== Optional Header info ======\n");
 	printf("\t Magic number: 0x%04x\n", header->magic);
 
@@ -64,7 +91,7 @@ void print_pe_opt_header(PE_OPTIONAL_HEADER * header) {
 	printf("\t Image checksum: 0x%08x\n", header->checksum);
 
 	printf("\t Subsystem: ");
-	subystem(header->subsystem);
+	subystem_lookup(header->subsystem);
 	printf(" (0x%04x)\n", header->subsystem);
 
 	printf("\t DLL characteristics: 0x%04x\n", header->dll_character);
@@ -83,11 +110,22 @@ void print_pe_opt_header(PE_OPTIONAL_HEADER * header) {
 
 	printf("\t Number of data directories: %d (0x%08x)\n", header->num_data_dirs, header->num_data_dirs);
 
+	printf("\t========================= Data directories =========================\n");
+	printf("\t%-20s", "Name"); 
+	printf("\t%-8s", "RVA");
+	printf("\t%-8s", "Phys");
+	printf("\t%-8s", "Size(bytes)\n");
+	printf("\t---------------------------------------------------------------------\n");
+
+	for (i = 0; i < header->num_data_dirs; i++)
+	{
+		printf("\t%-20s\t0x%08x\t0x%08x\t%d(0x%08x)\n", names[i], header->data_dirs[i].RVA, header->data_dirs[i].RVA + header->image_base, header->data_dirs[i].size, header->data_dirs[i].size);
+	}
 }
 
 
 /* Function is lookup table for subsytem value*/
-void subystem(uint16_t subsystem) {
+void subystem_lookup(uint16_t subsystem) {
 	switch (subsystem) {
 	case 1:
 		printf("NATIVE");
