@@ -5,11 +5,11 @@
 int read_ms_dos_header(FILE *file, MS_DOS_HEADER * header) {
 
 	if (fseek(file, 0, SEEK_SET)) {
-		return -1;
+		return 0;
 	}
 
 	if (!fread(header, sizeof(MS_DOS_HEADER), 1, file)) {
-		return -1;
+		return 0;
 	}
 
 	return 1;

@@ -4,26 +4,26 @@
 
 void machine_type_lookup(uint16_t machine);
 void timestamp(uint32_t timestamp);
-void characteristics(uint16_t characteristics);
+void image_characteristics(uint16_t characteristics);
 
 int read_pe_header(FILE *file, PE_STANDARD_HEADER * header, int32_t offset) {
 
 	uint32_t signature;
 
 	if (fseek(file, offset, SEEK_SET)) {
-		return -1;
+		return 0;
 	}
 
 	if (!fread(&signature, sizeof(uint32_t), 1, file)) {
-		return -1;
+		return 0;
 	}
 
 	if (signature != 0x4550) {
-		return -1;
+		return 0;
 	}
 
 	if (!fread(header, sizeof(PE_STANDARD_HEADER), 1, file)) {
-		return -1;
+		return 0;
 	}
 
 	return 1;
@@ -43,7 +43,7 @@ int print_pe_std_header(PE_STANDARD_HEADER * header) {
 	printf("\t Number of symbols: %d(0x%08x)\n", header->num_of_symbols, header->num_of_symbols);
 	printf("\t Size of optional header: 0x%04x\n", header->size_of_opt_header);
 	printf("\t Characteristics: 0x%04x\n", header->characteristics);
-	characteristics(header->characteristics);
+	image_characteristics(header->characteristics);
 
 	return 1;
 }
@@ -143,7 +143,7 @@ void timestamp(uint32_t timestamp)
 }
 
 /* Prints all found characteristics */
-void characteristics(uint16_t characteristics) {
+void image_characteristics(uint16_t characteristics) {
 	if (0x0001 & characteristics) printf("\t\tRELOCS_STRIPPED\n");
 	if (0x0002 & characteristics) printf("\t\tEXECUTABLE_IMAGE\n");
 	if (0x0004 & characteristics) printf("\t\tLINE_NUMS_STRIPPED\n");
