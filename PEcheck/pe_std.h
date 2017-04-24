@@ -4,6 +4,7 @@
 #include <stdint.h>
 
 typedef struct {
+	uint32_t magic;					// magic number
 	uint16_t machine;				// defines target machine
 	uint16_t num_of_sections;		// number of sections
 	uint32_t time_date_stamp;		// time-data stamp(lower 32 bits)
@@ -15,6 +16,6 @@ typedef struct {
 
 int read_pe_header(FILE *file, PE_STANDARD_HEADER * header, int32_t offset);
 
-int print_pe_std_header(PE_STANDARD_HEADER * header);
+void print_pe_std_header(PE_STANDARD_HEADER * header);
 
 #endif

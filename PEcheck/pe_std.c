@@ -22,6 +22,10 @@ int read_pe_header(FILE *file, PE_STANDARD_HEADER * header, int32_t offset) {
 		return 0;
 	}
 
+	if (fseek(file, offset, SEEK_SET)) {
+		return 0;
+	}
+
 	if (!fread(header, sizeof(PE_STANDARD_HEADER), 1, file)) {
 		return 0;
 	}
@@ -29,9 +33,11 @@ int read_pe_header(FILE *file, PE_STANDARD_HEADER * header, int32_t offset) {
 	return 1;
 }
 
-int print_pe_std_header(PE_STANDARD_HEADER * header) {
+void print_pe_std_header(PE_STANDARD_HEADER * header) {
 
 	printf("====== PE Header info ======\n");
+
+	printf("\t Magic number: 0x%04x\n", header->magic);
 	printf("\t Machine type: ");
 	machine_type_lookup(header->machine);
 	printf("(0x%04x)\n", header->machine);
@@ -45,7 +51,6 @@ int print_pe_std_header(PE_STANDARD_HEADER * header) {
 	printf("\t Characteristics: 0x%04x\n", header->characteristics);
 	image_characteristics(header->characteristics);
 
-	return 1;
 }
 
 

@@ -115,11 +115,13 @@
     <ClCompile Include="ms_dos.c" />
     <ClCompile Include="pe_opt.c" />
     <ClCompile Include="pe_std.c" />
+    <ClCompile Include="sections.c" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="ms_dos.h" />
     <ClInclude Include="pe_opt.h" />
     <ClInclude Include="pe_std.h" />
+    <ClInclude Include="sections.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

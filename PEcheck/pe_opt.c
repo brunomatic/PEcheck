@@ -49,7 +49,7 @@ void print_pe_opt_header(PE_OPTIONAL_HEADER * header) {
 		"CLR Runtime Header",
 		"Reserved"
 	};
-	int i;
+	uint8_t i;
 
 	printf("====== Optional Header info ======\n");
 	printf("\t Magic number: 0x%04x\n", header->magic);
