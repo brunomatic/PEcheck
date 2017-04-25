@@ -111,6 +111,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="idata_section.c" />
     <ClCompile Include="main.c" />
     <ClCompile Include="ms_dos.c" />
     <ClCompile Include="pe_opt.c" />
@@ -118,6 +119,7 @@
     <ClCompile Include="sections.c" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="idata_section.h" />
     <ClInclude Include="ms_dos.h" />
     <ClInclude Include="pe_opt.h" />
     <ClInclude Include="pe_std.h" />

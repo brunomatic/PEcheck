@@ -44,7 +44,7 @@ void print_pe_opt_header(PE_OPTIONAL_HEADER * header) {
 		"TLS Table",
 		"Load Config Table",
 		"Bound Import",
-		"IAT",
+		"Import Address Table",
 		"Delay Import Descriptor",
 		"CLR Runtime Header",
 		"Reserved"
@@ -62,10 +62,10 @@ void print_pe_opt_header(PE_OPTIONAL_HEADER * header) {
 	printf("\t Size of .data section: %d bytes (0x%08x)\n", header->size_init_data, header->size_init_data);
 	printf("\t Size of .bss section: %d bytes (0x%08x)\n", header->size_uninit_data, header->size_uninit_data);
 
-	printf("\t Entry point: 0x%08x (phys: 0x%08x)\n", header->adr_entry_point, header->adr_entry_point + header->image_base );
+	printf("\t Entry point: 0x%08x (RVA: 0x%08x)\n", header->adr_entry_point, header->adr_entry_point + header->image_base );
 
-	printf("\t Start of .text: 0x%08x (phys: 0x%08x)\n", header->base_code, header->base_code + header->image_base);
-	printf("\t Start of .data: 0x%08x (phys: 0x%08x)\n", header->base_data, header->base_data + header->image_base);
+	printf("\t Start of .text: 0x%08x (RVA: 0x%08x)\n", header->base_code, header->base_code + header->image_base);
+	printf("\t Start of .data: 0x%08x (RVA: 0x%08x)\n", header->base_data, header->base_data + header->image_base);
 
 	printf("\t Image base: 0x%08x \n", header->image_base);
 
@@ -113,13 +113,12 @@ void print_pe_opt_header(PE_OPTIONAL_HEADER * header) {
 	printf("\t========================= Data directories =========================\n");
 	printf("\t%-20s", "Name"); 
 	printf("\t%-8s", "RVA");
-	printf("\t%-8s", "Phys");
 	printf("\t%-8s", "Size(bytes)\n");
 	printf("\t---------------------------------------------------------------------\n");
 
 	for (i = 0; i < header->num_data_dirs; i++)
 	{
-		printf("\t%-20s\t0x%08x\t0x%08x\t%d(0x%08x)\n", names[i], header->data_dirs[i].RVA, header->data_dirs[i].RVA + header->image_base, header->data_dirs[i].size, header->data_dirs[i].size);
+		printf("\t%-20s\t0x%08x\t%d(0x%08x)\n", names[i], header->data_dirs[i].RVA, header->data_dirs[i].size, header->data_dirs[i].size);
 	}
 }
 

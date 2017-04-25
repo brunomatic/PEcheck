@@ -6,19 +6,21 @@
 #include "pe_std.h"
 #include "pe_opt.h"
 #include "sections.h"
+#include "idata_section.h"
 
 
 int main(int argc, char **argv) {
 
 	uint32_t offset;
+	int32_t temp;
 	FILE * file;
 	MS_DOS_HEADER ms_dos_header;
 	uint32_t signature;
 	PE_STANDARD_HEADER pe_standard_header;
 	PE_OPTIONAL_HEADER pe_optional_header;
 	SECTION_HEADER * section_headers;
-	idata_section import_section;
-	int import_header_index;
+	int idata_header_index;
+	DIRECTORY_TABLE directory_table;
 
 
 	if (argc != 2) {
@@ -77,6 +79,26 @@ int main(int argc, char **argv) {
 	if (!read_section_table(file, &section_headers, pe_standard_header.num_of_sections, offset )) {
 		printf("Error while reading section table! Error: %s\n", strerror(errno));
 		exit(EXIT_FAILURE);
+	}
+
+	idata_header_index = find_idata_section(&pe_standard_header, &pe_optional_header, section_headers);
+	
+	if (idata_header_index == -1) {
+		printf(".idata section not found!\n");
+	}
+	else {
+		
+		// directory table offset = RVA(import table) - RVA(idata_section) + ptr_to_raw_data(idata_section)
+		// number of entries = size(import table) / sizeof (data directory entry) - 1
+		temp = (pe_optional_header.data_dirs[1].size / DIR_ENTRY_SIZE) - 1 ;
+		offset = read_directory_table(file, &directory_table, pe_optional_header.data_dirs[1].RVA, section_headers[idata_header_index].RVA, section_headers[idata_header_index].ptr_data, temp);
+		if (!offset) {
+			printf("Error while .idata section! Error: %s\n", strerror(errno));
+			exit(EXIT_FAILURE);
+		}
+		
+		print_directory_table(&directory_table);
+
 	}
 
 	printf("Closing file: %s \n", argv[1]);

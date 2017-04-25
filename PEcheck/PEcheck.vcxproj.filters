@@ -30,6 +30,9 @@
     <ClCompile Include="sections.c">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="idata_section.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="ms_dos.h">
@@ -42,6 +45,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="sections.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="idata_section.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

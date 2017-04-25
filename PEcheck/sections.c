@@ -24,7 +24,7 @@ int read_section_table(FILE *file, SECTION_HEADER ** headers, uint8_t num_sectio
 	return 1;
 }
 
-int find_import_section(PE_STANDARD_HEADER * std_hdr, PE_OPTIONAL_HEADER * opt_hdr, SECTION_HEADER * section_hdrs) {
+int find_idata_section(PE_STANDARD_HEADER * std_hdr, PE_OPTIONAL_HEADER * opt_hdr, SECTION_HEADER * section_hdrs) {
 	int i;
 
 	/*
@@ -33,9 +33,10 @@ int find_import_section(PE_STANDARD_HEADER * std_hdr, PE_OPTIONAL_HEADER * opt_h
 
 	for (i = 0; i < std_hdr->num_of_sections; i++) {
 		
-		if ((opt_hdr->data_dirs[1].RVA < (section_hdrs[i].VA + section_hdrs[i].size)) && (opt_hdr->data_dirs[1].RVA > section_hdrs[i].VA))
+		if ((opt_hdr->data_dirs[1].RVA < (section_hdrs[i].RVA + section_hdrs[i].size)) && (opt_hdr->data_dirs[1].RVA > section_hdrs[i].RVA))
 			return i;
 
 	}
-	return 0;
+
+	return -1;
 }
