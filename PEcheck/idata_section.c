@@ -9,7 +9,7 @@
 	I'll fix it later...maybe
 */
 int read_directory_table(FILE * file,  DIRECTORY_TABLE * table, uint32_t dir_tbl_RVA, uint32_t section_RVA, uint32_t section_file_offest, int32_t num_entries) {
-	int i, j, k;
+	int32_t i, j, k;
 	uint8_t c;
 	uint32_t offset, temp;
 
@@ -90,7 +90,7 @@ int read_directory_table(FILE * file,  DIRECTORY_TABLE * table, uint32_t dir_tbl
 
 		table->data[i].import_tbl = malloc(table->data[i].num_import_tbl_entries * sizeof(IMPORT_LOOKUP_ENTRY));
 
-		for (j = 0; j < table->data[i].num_import_tbl_entries; j++)
+		for (j = 0; (uint32_t)j < table->data[i].num_import_tbl_entries; j++)
 		{
 			if (!fread(&(table->data[i].import_tbl[j]), IMPORT_TABLE_ENTRY_SIZE, 1, file)) {
 				return 0;
@@ -104,7 +104,7 @@ int read_directory_table(FILE * file,  DIRECTORY_TABLE * table, uint32_t dir_tbl
 	// if 31 - 0 - name RVA--> 30-0 matter 
 	for (i = 0; i < num_entries; i++)
 	{
-		for (j = 0; j < table->data[i].num_import_tbl_entries; j++)
+		for (j = 0; (uint32_t)j < table->data[i].num_import_tbl_entries; j++)
 		{
 			// check if ordinal, if so set name to null
 			if (table->data[i].import_tbl[j].bitfield & 0x80000000) {
@@ -155,7 +155,7 @@ void print_directory_table(DIRECTORY_TABLE * table, int32_t offset) {
 		printf("\t Forwarder Chain: 0x%08x\n", table->data[i].forwarder_chain);
 		printf("\t\t ====== Import Lookup Table ======\n");
 		printf("\t\t N \t Bitfield \t\t\t Hint \t\t Name\n");
-		for ( j = 0; j < table->data[i].num_import_tbl_entries; j++)
+		for ( j = 0; (uint32_t)j < table->data[i].num_import_tbl_entries; j++)
 		{
 			printf("\t\t %d \t 0x%08x (phys:0x%08x) \t 0x%04x \t %s \n", j+1, table->data[i].import_tbl[j].bitfield, \
 				(table->data[i].import_tbl[j].bitfield & 0x80000000 ? 0x00000000 : table->data[i].import_tbl[j].bitfield + offset), \

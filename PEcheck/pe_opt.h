@@ -48,6 +48,6 @@ typedef struct
 
 int read_optional_header(FILE * file, PE_OPTIONAL_HEADER * header, uint32_t offset);
 
-void print_pe_opt_header(PE_OPTIONAL_HEADER * header);
+void print_optional_header(PE_OPTIONAL_HEADER * header);
 
 #endif // !PE_OPT_HEADER

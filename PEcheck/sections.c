@@ -5,9 +5,8 @@
 #include "pe_std.h"
 
 
-int read_section_table(FILE *file, SECTION_HEADER ** headers, uint8_t num_sections, uint32_t offset) {
+int read_section_table(FILE *file, SECTION_HEADER ** headers, uint16_t num_sections, uint32_t offset) {
 	SECTION_HEADER * section_hdr;
-	int i;
 	
 	if (fseek(file, offset, SEEK_SET)) {
 		return 0;

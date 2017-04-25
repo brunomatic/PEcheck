@@ -2,7 +2,7 @@
 #include <stdlib.h>
 #include "pe_opt.h"
 
-
+/* Internal function prototypes */
 void subystem_lookup(uint16_t subsystem);
 void dll_characteristics(uint16_t characteristics);
 
@@ -29,8 +29,7 @@ int read_optional_header(FILE * file, PE_OPTIONAL_HEADER * header, uint32_t offs
 	return 1;
 }
 
-
-void print_pe_opt_header(PE_OPTIONAL_HEADER * header) {
+void print_optional_header(PE_OPTIONAL_HEADER * header) {
 	const char * names[] = {
 		"Export Table",
 		"Import Table",
@@ -121,7 +120,6 @@ void print_pe_opt_header(PE_OPTIONAL_HEADER * header) {
 		printf("\t%-20s\t0x%08x\t%d(0x%08x)\n", names[i], header->data_dirs[i].RVA, header->data_dirs[i].size, header->data_dirs[i].size);
 	}
 }
-
 
 /* Function is lookup table for subsytem value*/
 void subystem_lookup(uint16_t subsystem) {
