@@ -37,6 +37,6 @@ typedef struct {
 
 int read_directory_table(FILE * file, DIRECTORY_TABLE * table, uint32_t dir_tbl_RVA, uint32_t section_RVA, uint32_t section_file_offest, int32_t num_entries);
 
-void print_directory_table(DIRECTORY_TABLE * table);
+void print_directory_table(DIRECTORY_TABLE * table, int32_t offset);
 
 #endif // ! IDATA_SECTION_HEADER

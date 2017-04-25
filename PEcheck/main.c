@@ -11,7 +11,7 @@
 
 int main(int argc, char **argv) {
 
-	uint32_t offset;
+	int32_t offset;
 	int32_t temp;
 	FILE * file;
 	MS_DOS_HEADER ms_dos_header;
@@ -97,7 +97,8 @@ int main(int argc, char **argv) {
 			exit(EXIT_FAILURE);
 		}
 		
-		print_directory_table(&directory_table);
+		offset = section_headers[idata_header_index].ptr_data - section_headers[idata_header_index].RVA;
+		print_directory_table(&directory_table, offset);
 
 	}
 

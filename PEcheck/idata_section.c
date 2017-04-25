@@ -140,5 +140,29 @@ int read_directory_table(FILE * file,  DIRECTORY_TABLE * table, uint32_t dir_tbl
 
 }
 
-void print_directory_table(DIRECTORY_TABLE * table) {
+void print_directory_table(DIRECTORY_TABLE * table, int32_t offset) {
+	int i, j;
+
+	printf("====== Directory table ======\n");
+
+	for ( i = 0; i < table->num_entries; i++)
+	{
+		printf("==========================================\n");
+		printf("\t Import name: %s \n", table->data[i].name);
+		printf("\t Time-data stamp: 0x%08x\n", table->data[i].time_date_stamp);
+		printf("\t Import Lookup Table: 0x%08x (phys:0x%08x)\n", table->data[i].import_adr_table_RVA, table->data[i].import_adr_table_RVA + offset);
+		printf("\t Import Address Table: 0x%08x (phys:0x%08x)\n", table->data[i].import_adr_table_RVA, table->data[i].import_adr_table_RVA + offset);
+		printf("\t Forwarder Chain: 0x%08x\n", table->data[i].forwarder_chain);
+		printf("\t\t ====== Import Lookup Table ======\n");
+		printf("\t\t N \t Bitfield \t\t\t Hint \t\t Name\n");
+		for ( j = 0; j < table->data[i].num_import_tbl_entries; j++)
+		{
+			printf("\t\t %d \t 0x%08x (phys:0x%08x) \t 0x%04x \t %s \n", j+1, table->data[i].import_tbl[j].bitfield, \
+				(table->data[i].import_tbl[j].bitfield & 0x80000000 ? 0x00000000 : table->data[i].import_tbl[j].bitfield + offset), \
+				table->data[i].import_tbl[j].hint, table->data[i].import_tbl[j].name);
+		}
+
+	}
+
+
 }
