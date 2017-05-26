@@ -26,17 +26,17 @@ typedef struct {
 	IMPORT_LOOKUP_ENTRY * import_tbl;
 	uint32_t num_import_tbl_entries;
 	char name[255];						// again i don't care
-} DIRECTORY_ENTRY;			
+} IMPORT_DIRECTORY_ENTRY;			
 
 
 typedef struct {
-	DIRECTORY_ENTRY * data;
+	IMPORT_DIRECTORY_ENTRY * data;
 	uint16_t num_entries;
-} DIRECTORY_TABLE;
+} IMPORT_DIRECTORY_TABLE;
 
 
-int read_directory_table(FILE * file, DIRECTORY_TABLE * table, uint32_t dir_tbl_RVA, uint32_t section_RVA, uint32_t section_file_offest, int32_t num_entries);
+int read_idata_directory_table(FILE * file, IMPORT_DIRECTORY_TABLE * table, uint32_t dir_tbl_RVA, uint32_t section_RVA, uint32_t section_file_offest, int32_t num_entries);
 
-void print_directory_table(DIRECTORY_TABLE * table, int32_t offset);
+void print_idata_directory_table(IMPORT_DIRECTORY_TABLE * table, int32_t offset);
 
 #endif // ! IDATA_SECTION_HEADER

@@ -5,10 +5,10 @@
 
 
 /*
-	Builds directory list structure from file - it is a mes but works
-	I'll fix it later...maybe
+	Builds directory list structure from file - it is a mess but works
+	I lied, I won't fix it
 */
-int read_directory_table(FILE * file,  DIRECTORY_TABLE * table, uint32_t dir_tbl_RVA, uint32_t section_RVA, uint32_t section_file_offest, int32_t num_entries) {
+int read_idata_directory_table(FILE * file, IMPORT_DIRECTORY_TABLE * table, uint32_t dir_tbl_RVA, uint32_t section_RVA, uint32_t section_file_offest, int32_t num_entries) {
 	int32_t i, j, k;
 	uint8_t c;
 	uint32_t offset, temp;
@@ -20,7 +20,7 @@ int read_directory_table(FILE * file,  DIRECTORY_TABLE * table, uint32_t dir_tbl
 	}
 
 	// allocate data and read raw directory table
-	table->data = malloc(sizeof(DIRECTORY_ENTRY)*num_entries);
+	table->data = malloc(sizeof(IMPORT_DIRECTORY_ENTRY)*num_entries);
 	table->num_entries = num_entries;
 
 	for (i = 0; i < num_entries; i++)
@@ -140,10 +140,10 @@ int read_directory_table(FILE * file,  DIRECTORY_TABLE * table, uint32_t dir_tbl
 
 }
 
-void print_directory_table(DIRECTORY_TABLE * table, int32_t offset) {
+void print_idata_directory_table(IMPORT_DIRECTORY_TABLE * table, int32_t offset) {
 	int i, j;
 
-	printf("====== Directory table ======\n");
+	printf("====== idata section - IMPORTS ======\n");
 
 	for ( i = 0; i < table->num_entries; i++)
 	{

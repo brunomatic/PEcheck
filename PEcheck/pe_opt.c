@@ -12,7 +12,7 @@ int read_optional_header(FILE * file, PE_OPTIONAL_HEADER * header, uint32_t offs
 		return 0;
 	}
 
-	if (!fread(header, sizeof(PE_OPTIONAL_HEADER)-4, 1, file)) {
+	if (!fread(header, sizeof(PE_OPTIONAL_HEADER)-sizeof(DATA_DIR *), 1, file)) {
 		return 0;
 	}
 
@@ -21,6 +21,7 @@ int read_optional_header(FILE * file, PE_OPTIONAL_HEADER * header, uint32_t offs
 	}
 
 	header->data_dirs = malloc(sizeof(DATA_DIR)*header->num_data_dirs);
+
 	
 	if (!fread(header->data_dirs, sizeof(DATA_DIR), header->num_data_dirs, file)) {
 		return 0;
@@ -61,10 +62,9 @@ void print_optional_header(PE_OPTIONAL_HEADER * header) {
 	printf("\t Size of .data section: %d bytes (0x%08x)\n", header->size_init_data, header->size_init_data);
 	printf("\t Size of .bss section: %d bytes (0x%08x)\n", header->size_uninit_data, header->size_uninit_data);
 
-	printf("\t Entry point: 0x%08x (RVA: 0x%08x)\n", header->adr_entry_point, header->adr_entry_point + header->image_base );
+	printf("\t Entry point: 0x%08x\n", header->adr_entry_point);
 
-	printf("\t Start of .text: 0x%08x (RVA: 0x%08x)\n", header->base_code, header->base_code + header->image_base);
-	printf("\t Start of .data: 0x%08x (RVA: 0x%08x)\n", header->base_data, header->base_data + header->image_base);
+	printf("\t Start of .data: 0x%08x\n", header->base_data);
 
 	printf("\t Image base: 0x%08x \n", header->image_base);
 

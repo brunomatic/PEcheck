@@ -6,6 +6,7 @@
 #include "pe_opt.h"
 #include "sections.h"
 #include "idata_section.h"
+#include "edata_section.h"
 
 
 int main(int argc, char **argv) {
@@ -17,8 +18,9 @@ int main(int argc, char **argv) {
 	PE_STANDARD_HEADER pe_standard_header;
 	PE_OPTIONAL_HEADER pe_optional_header;
 	SECTION_HEADER * section_headers;
-	int idata_header_index;
-	DIRECTORY_TABLE directory_table;
+	int header_index;
+	IMPORT_DIRECTORY_TABLE idata_directory_table;
+	EDATA_SECTION  * edata_table;
 
 
 	if (argc != 2) {
@@ -79,25 +81,53 @@ int main(int argc, char **argv) {
 		exit(EXIT_FAILURE);
 	}
 
-	idata_header_index = find_idata_section(&pe_standard_header, &pe_optional_header, section_headers);
+	print_sections(&pe_standard_header, section_headers);
+
+
+	header_index = find_idata_section(&pe_standard_header, &pe_optional_header, section_headers);
 	
-	if (idata_header_index == -1) {
-		printf(".idata section not found!\n");
+	if (header_index == -1) {
+		printf("===========================\n");
+		printf("idata section not found!\n");
+		printf("===========================\n");
 	}
 	else {
 		
 		// directory table offset = RVA(import table) - RVA(idata_section) + ptr_to_raw_data(idata_section)
 		// number of entries = size(import table) / sizeof (data directory entry) - 1
 		temp = (pe_optional_header.data_dirs[1].size / DIR_ENTRY_SIZE) - 1 ;
-		offset = read_directory_table(file, &directory_table, pe_optional_header.data_dirs[1].RVA, section_headers[idata_header_index].RVA, section_headers[idata_header_index].ptr_data, temp);
+		offset = read_idata_directory_table(file, &idata_directory_table, pe_optional_header.data_dirs[1].RVA, section_headers[header_index].RVA, section_headers[header_index].ptr_data, temp);
 		if (!offset) {
-			printf("Error while .idata section!\n");
+			printf("Error while reading .idata section!\n");
 			exit(EXIT_FAILURE);
 		}
 		
 		// print this nightmare 
-		offset = section_headers[idata_header_index].ptr_data - section_headers[idata_header_index].RVA;
-		print_directory_table(&directory_table, offset);
+		offset = section_headers[header_index].ptr_data - section_headers[header_index].RVA;
+		print_idata_directory_table(&idata_directory_table, offset);
+
+	}
+
+	header_index = find_edata_section(&pe_standard_header, &pe_optional_header, section_headers);
+
+	if (header_index == -1) {
+		printf("===========================\n");
+		printf("edata section not found!\n");
+		printf("===========================\n");
+	}
+	else {
+
+		offset = read_edata_directory_table(file, &edata_table, pe_optional_header.data_dirs[0].RVA, section_headers[header_index].RVA, section_headers[header_index].ptr_data);
+		if (!offset) {
+			printf("Error while reading .edata section!\n");
+			exit(EXIT_FAILURE);
+		}
+
+		// print this nightmare 
+		offset = section_headers[header_index].ptr_data - section_headers[header_index].RVA;
+		print_edata_directory_table(edata_table, offset);
+
+		free(edata_table);
 
 	}
 

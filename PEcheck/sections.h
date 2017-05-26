@@ -22,6 +22,10 @@ typedef struct {
 
 int read_section_table(FILE *file, SECTION_HEADER ** headers, uint16_t num_sections, uint32_t offset);
 
+void print_sections(PE_STANDARD_HEADER * std_hdr, SECTION_HEADER * section_hdrs);
+
 int find_idata_section(PE_STANDARD_HEADER * std_hdr, PE_OPTIONAL_HEADER * opt_hdr, SECTION_HEADER * section_hdrs);
+
+int find_edata_section(PE_STANDARD_HEADER * std_hdr, PE_OPTIONAL_HEADER * opt_hdr, SECTION_HEADER * section_hdrs);
 
 #endif // ! SECTIONS_HEADER
