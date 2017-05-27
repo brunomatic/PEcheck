@@ -119,11 +119,7 @@ int read_edata_directory_table(FILE * file, EDATA_SECTION ** section_ptr, uint32
 }
 
 void print_edata_directory_table(EDATA_SECTION * section, int32_t offset) {
-	/*
 
-	uint32_t adr_table_entries; // number of entries in export address table
-	uint32_t num_name_ptr;		// number of name pointers(and ordinal table entries)
-	*/
 	int32_t i;
 
 	printf("====== edata section - EXPORTS ======\n");
@@ -139,32 +135,11 @@ void print_edata_directory_table(EDATA_SECTION * section, int32_t offset) {
 	printf("\t Name pointer table: 0x%08x (RVA: 0x%08x)\n", section->dir_table.name_ptr_RVA  + offset, section->dir_table.name_ptr_RVA); 
 	printf("\t Ordinal table: 0x%08x (RVA: 0x%08x)\n", section->dir_table.ordinal_tbl_RVA + offset, section->dir_table.ordinal_tbl_RVA);
 
-	printf("\t\t ---------- Address table ----------\n");
-	printf("\t\t No.		RVA\n");
-	for ( i = 0; i < section->dir_table.adr_table_entries; i++)
-	{
-		printf("\t\t %d		0x%08x\n", i, section->adr_tbl[i].RVA );
-	}
-
-	printf("\t\t ---------- Name pointer table ----------\n");
-	printf("\t\t No.		RVA\n");
+	printf("\t\t %-10s \t %-10s \t %-25s \t %-10s \n", "Ordinal", "Name RVA", "Name", "Export RVA");
 	for (i = 0; i < section->dir_table.num_name_ptr; i++)
 	{
-		printf("\t\t %d		0x%08x\n", i, section->name_ptr_tbl[i].RVA);
-	}
-
-	printf("\t\t ---------- Ordinal table ----------\n");
-	printf("\t\t No.		Ordinal\n");
-	for (i = 0; i < section->dir_table.num_name_ptr; i++)
-	{
-		printf("\t\t %d		0x%04x\n", i, section->ordinal_tbl[i].ordinal);
-	}
-
-	printf("\t\t ---------- Name table ----------\n");
-	printf("\t\t No.		Name\n");
-	for (i = 0; i < section->dir_table.num_name_ptr; i++)
-	{
-		printf("\t\t %d		%sx\n", i, section->name_tbl[i].name);
+		// according to MS docs it should be (section->ordinal_tbl[i].ordinal - section->dir_table.ordinal_base) but it is wrong
+		printf("\t\t %-10d \t (0x%08x) \t %-25s \t  0x%08x \n", section->ordinal_tbl[i].ordinal, section->name_ptr_tbl[i].RVA, section->name_tbl[i].name, section->adr_tbl[section->ordinal_tbl[i].ordinal].RVA);
 	}
 
 	return;
